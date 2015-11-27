@@ -6,6 +6,10 @@
 //  Copyright (c) 2014 Cyril Chandelier. All rights reserved.
 //
 
+// Notifications
+#define PZ_SIDE_MENU_VIEW_CONTROLLER_WILL_CLOSE_NOTIFICATION @"PZ_SIDE_MENU_VIEW_CONTROLLER_WILL_CLOSE_NOTIFICATION"
+#define PZ_SIDE_MENU_VIEW_CONTROLLER_DID_CLOSE_NOTIFICATION  @"PZ_SIDE_MENU_VIEW_CONTROLLER_DID_CLOSE_NOTIFICATION"
+
 @interface PZSideMenuViewController : UIViewController <UIGestureRecognizerDelegate>
 
 // Constructors
@@ -22,6 +26,9 @@
 
 // Gestur recognizer
 @property (nonatomic, strong, readonly) UIPanGestureRecognizer *centerPanGestureRecognizer;
+
+// Enable swipe gesture
+@property (nonatomic, assign, getter = isGestureEnabled) BOOL gestureEnabled;
 
 // View controllers
 @property (nonatomic, strong) UIViewController *centerViewController;

@@ -73,6 +73,7 @@
     _shadowColor = [UIColor blackColor];
     _shadowRadius = 10.0f;
     _shadowOpacity = 0.4f;
+    _gestureEnabled = YES;
 }
 
 #pragma mark - View management
@@ -191,6 +192,9 @@
         if ([_centerViewController conformsToProtocol:@protocol(PZSideMenuProtocol)] && [_centerViewController respondsToSelector:@selector(viewDidGrow)])
             [_centerViewController performSelector:@selector(viewDidGrow) withObject:nil];
         
+        // Post did close notification
+        [[NSNotificationCenter defaultCenter] postNotificationName:PZ_SIDE_MENU_VIEW_CONTROLLER_DID_CLOSE_NOTIFICATION object:nil];
+        
         // Execute completion block
         if (completionBlock)
             completionBlock();
@@ -207,6 +211,8 @@
     // Add shadow
     [self removeCenterViewControllerShadow];
     
+    // Post will close notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:PZ_SIDE_MENU_VIEW_CONTROLLER_WILL_CLOSE_NOTIFICATION object:nil];
     
     // Animable part
     if (animated)
@@ -407,13 +413,16 @@
 
 - (void)prepareAndDisplayCenterViewControllerWithTransform:(CGAffineTransform)transform
 {
-    // Add gestures
-    _centerPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movePanel:)];
-    [_centerPanGestureRecognizer setMinimumNumberOfTouches:1];
-    [_centerPanGestureRecognizer setMaximumNumberOfTouches:1];
-    [_centerPanGestureRecognizer setDelegate:self];
-    
-    [_centerViewController.view addGestureRecognizer:_centerPanGestureRecognizer];
+    if (_gestureEnabled)
+    {
+        // Add gestures
+        _centerPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movePanel:)];
+        [_centerPanGestureRecognizer setMinimumNumberOfTouches:1];
+        [_centerPanGestureRecognizer setMaximumNumberOfTouches:1];
+        [_centerPanGestureRecognizer setDelegate:self];
+        
+        [_centerViewController.view addGestureRecognizer:_centerPanGestureRecognizer];
+    }
     
     // Add center view as subview
     [self.view addSubview:_centerViewController.view];
